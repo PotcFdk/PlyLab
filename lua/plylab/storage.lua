@@ -48,7 +48,6 @@ function PlyLab.Storage.load (ply)
 		for _, sid in next, (file.Find("plylab/*.txt", "DATA")) do
 			sid = sid:gsub("%.txt$", "")
 			sid = dSID(sid)
-			print(sid)
 			if issteamid(sid) then
 				PlyLab.Storage.load (sid)
 			end
