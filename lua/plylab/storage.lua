@@ -93,3 +93,8 @@ function PlyLab.Storage.save (ply)
 	fh:Write(data.label)
 	fh:Close()
 end
+
+function PlyLab.Storage.delete (ply)
+	assert(issteamid(ply), "Parameter #1 must be SteamID!")
+	file.Delete(string.format("plylab/%s.txt", sSID(ply)), "DATA")
+end
