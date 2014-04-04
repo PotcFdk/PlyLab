@@ -33,7 +33,7 @@ end
 
 -- PlyLab.Storage
 
-local FileFormatVersion = 1
+local FileFormatVersion = 2
 
 function PlyLab.Storage.init ()
 	file.CreateDir ("plylab")
@@ -61,10 +61,11 @@ function PlyLab.Storage.load (ply)
 	assert(fh:ReadByte() == FileFormatVersion, "Invalid format version.")
 	
 	local time = fh:ReadLong()
+	local nick = fh:Read(fh:ReadLong())
 	local label = fh:Read(fh:ReadLong())	
 	fh:Close()
 	
-	PlyLab.labels[ply] = { time = time, label = label }
+	PlyLab.labels[ply] = { time = time, nick = nick, label = label }
 end
 
 function PlyLab.Storage.save (ply)
@@ -88,6 +89,8 @@ function PlyLab.Storage.save (ply)
 	fh:WriteByte(0)
 	fh:WriteByte(FileFormatVersion)
 	fh:WriteLong(data.time)
+	fh:WriteLong(string.len(data.nick or ""))
+	fh:Write(data.nick or "")
 	fh:WriteLong(string.len(data.label))
 	fh:Write(data.label)
 	fh:Close()

@@ -48,8 +48,9 @@ function PlyLab.setLabel (ply, label)
 	end
 	
 	PlyLab.labels[ply] = PlyLab.labels[ply] or {}
-	PlyLab.labels[ply].label = label
-	PlyLab.labels[ply].time = os.time()
+	local data = PlyLab.labels[ply]
+	data.label = label
+	data.time = os.time()
 	
 	PlyLab.Storage.save (ply)
 end
