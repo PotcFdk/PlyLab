@@ -121,7 +121,7 @@ function PlyLab.showLabelMenu ()
 		end
 		
 		for sid, entry in next, entries do
-			DComboBox:AddChoice(string.format("%s%s (%s)", entry.alias, 
+			DComboBox:AddChoice(string.format("%s%s (%s)", entry.alias or "???", 
 					(entry.nick and entry.nick ~= entry.alias and " | "..entry.nick or ""), tostring(sid)),
 				{alias=entry.alias, sid=sid})
 		end
