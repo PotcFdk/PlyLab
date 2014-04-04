@@ -25,3 +25,11 @@ end
 for _, f in next, (file.Find("plylab/*.lua", SERVER and "LSV" or "LCL")) do
 	AddClientsideLuaFile ("plylab/"..f)
 end
+
+-- Done.
+
+if SERVER then
+	CreateConVar("has_plylab", "1", {FCVAR_NOTIFY})
+elseif CLIENT then
+	PlyLab.init()
+end
