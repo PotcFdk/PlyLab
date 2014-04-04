@@ -31,3 +31,19 @@ end
 function PLAYER:UnsetLabel ()
 	return PlyLab.unsetLabel (self)
 end
+
+function PLAYER:GetAlias ()
+	return PlyLab.getAlias (self)
+end
+
+function PLAYER:HasAlias ()
+	return self:GetAlias () and true or false
+end
+
+function PLAYER:SetAlias (label)
+	return PlyLab.setAlias (self, label)
+end
+
+function PLAYER:UnsetAlias ()
+	return PlyLab.unsetAlias (self)
+end

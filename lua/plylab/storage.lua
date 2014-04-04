@@ -61,11 +61,11 @@ function PlyLab.Storage.load (ply)
 	assert(fh:ReadByte() == FileFormatVersion, "Invalid format version.")
 	
 	local time = fh:ReadLong()
-	local nick = fh:Read(fh:ReadLong())
+	local alias = fh:Read(fh:ReadLong())
 	local label = fh:Read(fh:ReadLong())	
 	fh:Close()
 	
-	PlyLab.labels[ply] = { time = time, nick = nick, label = label }
+	PlyLab.labels[ply] = { time = time, alias = alias, label = label }
 end
 
 function PlyLab.Storage.save (ply)
@@ -82,17 +82,20 @@ function PlyLab.Storage.save (ply)
 	
 	local data = PlyLab.labels[ply]
 	if not istable(data) then return end
-	assert(isstring(data.label) and isnumber(data.time), "Label data for " .. ply .. " is malformed!")
+	local err = "Label data for " .. ply .. " is malformed!"
+	assert(isnumber(data.time), err)
+	if data.label then assert(isstring(data.label), err) end
+	if data.alias then assert(isstring(data.alias), err) end
 	
 	local fh = file.Open(string.format("plylab/%s.txt", sSID(ply)), "wb", "DATA")
 	fh:Write("PLYLAB")
 	fh:WriteByte(0)
 	fh:WriteByte(FileFormatVersion)
 	fh:WriteLong(data.time)
-	fh:WriteLong(string.len(data.nick or ""))
-	fh:Write(data.nick or "")
-	fh:WriteLong(string.len(data.label))
-	fh:Write(data.label)
+	fh:WriteLong(string.len(data.alias or ""))
+	fh:Write(data.alias or "")
+	fh:WriteLong(string.len(data.label or ""))
+	fh:Write(data.label or "")
 	fh:Close()
 end
 

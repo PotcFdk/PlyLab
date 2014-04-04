@@ -53,11 +53,23 @@ function PlyLab.showLabelMenu ()
 	Info:SetTextColor(Color(195,15,0))
 	Info:SetText("")
 	
-	local TextEntry = vgui.Create("DTextEntry", Frame)
-	TextEntry:SetPos(10, 100)
-	TextEntry:SetSize(Frame_Width-20, Frame_Height-100-35)
-	TextEntry:SetMultiline(true)
-	TextEntry:SetEditable(true)
+	local AliasLabel = vgui.Create("DLabel", Frame)
+	AliasLabel:SetPos(20, 100)
+	AliasLabel:SetSize(40, 20)
+	AliasLabel:SetTextColor(Color(0,0,0))
+	AliasLabel:SetText("Name:")
+	
+	local Alias = vgui.Create("DTextEntry", Frame)
+	Alias:SetPos(10+50, 100)
+	Alias:SetSize(Frame_Width-50-20, 20)
+	Alias:SetMultiline(false)
+	Alias:SetEditable(true)
+	
+	local LabelText = vgui.Create("DTextEntry", Frame)
+	LabelText:SetPos(10, 130)
+	LabelText:SetSize(Frame_Width-20, Frame_Height-130-35)
+	LabelText:SetMultiline(true)
+	LabelText:SetEditable(true)
 	
 	local DComboBox = vgui.Create("DComboBox", Frame)
 	DComboBox:SetPos(Frame_Width - 160, 30)
@@ -67,7 +79,7 @@ function PlyLab.showLabelMenu ()
 	-- ComboBox hacks, sorry.
 		function DComboBox:OpenMenu(pControlOpener)
 			if ( pControlOpener ) then
-				if ( pControlOpener == self.TextEntry ) then
+				if ( pControlOpener == self.LabelText ) then
 					return
 				end
 			end
@@ -79,9 +91,8 @@ function PlyLab.showLabelMenu ()
 			self.Menu = DermaMenu()
 			for k, v in pairs( self.Choices ) do
 				local opt = self.Menu:AddOption( v, function() self:ChooseOption( v, k ) end )
-				print(opt)
 				function opt.Paint(opt, w, h)
-					if PlyLab.labels[self.Data[k] or "N/A"] then
+					if PlyLab.labels[self.Data[k].sid or "N/A"] then
 						surface.SetDrawColor(200,200,200,255)
 					else
 						surface.SetDrawColor(100,100,100,255)
@@ -100,24 +111,30 @@ function PlyLab.showLabelMenu ()
 		local entries = {}
 		
 		for sid, data in next, PlyLab.labels do
-			entries[sid] = data.nick or true
+			entries[sid] = { alias = data.alias }
 		end
 		
 		for _, ply in next, player.GetAll() do
-			entries[ply:SteamID()] = ply:Nick()
+			entries[ply:SteamID()] = entries[ply:SteamID()] or {}
+			entries[ply:SteamID()].nick = ply:Nick()
+			entries[ply:SteamID()].alias = entries[ply:SteamID()].alias or ply:Nick()
 		end
 		
-		for sid, nick in next, entries do
-			DComboBox:AddChoice(string.format("%s (%s)", isstring(nick) and nick or "???", tostring(sid)), sid)
+		for sid, entry in next, entries do
+			DComboBox:AddChoice(string.format("%s%s (%s)", entry.alias, 
+					(entry.nick and entry.nick ~= entry.alias and " | "..entry.nick or ""), tostring(sid)),
+				{alias=entry.alias, sid=sid})
 		end
 	end
 	
 	DComboBox.OnSelect = function(panel, index, value, data)
-		sid = data
-		if istable(PlyLab.labels) and PlyLab.labels[data] and isstring(PlyLab.labels[data].label) then
-			TextEntry:SetText(PlyLab.labels[sid].label)
+		sid = data.sid
+		if istable(PlyLab.labels) and PlyLab.labels[sid] then
+			Alias:SetText(isstring(data.alias) and data.alias or "")
+			LabelText:SetText(PlyLab.labels[sid].label or "")
 		else
-			TextEntry:SetText("")
+			Alias:SetText("")
+			LabelText:SetText("")
 		end
 	end
 	
@@ -132,7 +149,7 @@ function PlyLab.showLabelMenu ()
 			return
 		end
 		
-		PlyLab.unsetLabel(sid)
+		PlyLab.delete(sid)
 		
 		Frame:Close()
 	end
@@ -147,7 +164,17 @@ function PlyLab.showLabelMenu ()
 			return
 		end
 		
-		PlyLab.setLabel(sid, TextEntry:GetText())
+		if Alias:GetText():len() > 0 then
+			PlyLab.setAlias(sid, Alias:GetText())
+		else
+			PlyLab.unsetAlias(sid)
+		end
+		
+		if LabelText:GetText():len() > 0 then
+			PlyLab.setLabel(sid, LabelText:GetText())
+		else
+			PlyLab.unsetLabel(sid)
+		end
 		
 		Frame:Close()
 	end

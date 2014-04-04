@@ -23,7 +23,7 @@ end
 
 PlyLab.labels = PlyLab.labels or {}
 
-function PlyLab.unsetLabel (ply)
+function PlyLab.delete (ply)
 	if type(ply) == "Player" then
 		assert(IsValid(ply), "Invalid player.")
 		ply = ply:SteamID()
@@ -35,17 +35,29 @@ function PlyLab.unsetLabel (ply)
 	PlyLab.Storage.delete (ply)
 end
 
+function PlyLab.unsetLabel (ply)
+	if type(ply) == "Player" then
+		assert(IsValid(ply), "Invalid player.")
+		ply = ply:SteamID()
+	end
+	assert(isstring(ply), "Invalid SteamID.")
+	
+	local data = PlyLab.labels[ply]
+	
+	if not istable(data) then return end
+	
+	data.label = nil
+	data.time = os.time()
+	
+	PlyLab.Storage.save (ply)
+end
+
 function PlyLab.setLabel (ply, label)
 	if type(ply) == "Player" then
 		assert(IsValid(ply), "Invalid player.")
 		ply = ply:SteamID()
 	end
 	assert(isstring(ply), "Invalid SteamID.")
-
-	label = string.Trim(label)
-	if string.len(label) == 0 then 
-		return PlyLab.unsetLabel(ply)
-	end
 	
 	PlyLab.labels[ply] = PlyLab.labels[ply] or {}
 	local data = PlyLab.labels[ply]
@@ -63,4 +75,46 @@ function PlyLab.getLabel (ply)
 	assert(isstring(ply), "Invalid SteamID.")
 	
 	return PlyLab.labels[ply] and PlyLab.labels[ply].label
+end
+
+function PlyLab.unsetAlias (ply)
+	if type(ply) == "Player" then
+		assert(IsValid(ply), "Invalid player.")
+		ply = ply:SteamID()
+	end
+	assert(isstring(ply), "Invalid SteamID.")
+	
+	local data = PlyLab.labels[ply]
+	
+	if not istable(data) then return end
+	
+	data.alias = nil
+	data.time = os.time()
+	
+	PlyLab.Storage.save (ply)
+end
+
+function PlyLab.setAlias (ply, alias)
+	if type(ply) == "Player" then
+		assert(IsValid(ply), "Invalid player.")
+		ply = ply:SteamID()
+	end
+	assert(isstring(ply), "Invalid SteamID.")
+	
+	PlyLab.labels[ply] = PlyLab.labels[ply] or {}
+	local data = PlyLab.labels[ply]
+	data.alias = alias
+	data.time = os.time()
+	
+	PlyLab.Storage.save (ply)
+end
+
+function PlyLab.getAlias (ply)
+	if type(ply) == "Player" then
+		assert(IsValid(ply), "Invalid player.")
+		ply = ply:SteamID()
+	end
+	assert(isstring(ply), "Invalid SteamID.")
+	
+	return PlyLab.labels[ply] and PlyLab.labels[ply].alias
 end
