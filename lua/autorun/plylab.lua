@@ -22,7 +22,25 @@ local function AddClientsideLuaFile (path)
 	end
 end
 
-for _, f in next, (file.Find("plylab/*.lua", SERVER and "LSV" or "LCL")) do
+---
+
+-- How does "LUA", "LSV", "LCL" work? I have no idea!
+-- It just seems to work and break randomly.
+-- So instead, I'm using all of them.
+
+local files = {}
+
+for _, f in next, (file.Find("plylab/*.lua", "LSV")) do
+	files[f] = true
+end
+for _, f in next, (file.Find("plylab/*.lua", "LCL")) do
+	files[f] = true
+end
+for _, f in next, (file.Find("plylab/*.lua", "LUA")) do
+	files[f] = true
+end
+
+for f in next, files do
 	AddClientsideLuaFile ("plylab/"..f)
 end
 
