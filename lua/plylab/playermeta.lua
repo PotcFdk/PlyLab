@@ -20,6 +20,10 @@ function PLAYER:GetLabel ()
 	return PlyLab.getLabel (self)
 end
 
+function PLAYER:HasLabel ()
+	return self:GetLabel () and true or false
+end
+
 function PLAYER:SetLabel (label)
 	return PlyLab.setLabel (self, label)
 end
