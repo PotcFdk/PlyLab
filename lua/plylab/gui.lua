@@ -19,6 +19,8 @@ local Tag = "PlyLab"
 local Frame_Width = 400
 local Frame_Height = 300
 
+PlyLab = PlyLab or {}
+
 function PlyLab.showLabelMenu ()	
 	local sid
 	
