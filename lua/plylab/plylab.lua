@@ -16,6 +16,11 @@
 
 PlyLab = PlyLab or {}
 
+function PlyLab.init ()
+	PlyLab.Storage.init()
+	PlyLab.Storage.load()
+end
+
 PlyLab.labels = PlyLab.labels or {}
 
 function PlyLab.unsetLabel (ply)
@@ -27,7 +32,7 @@ function PlyLab.unsetLabel (ply)
 	
 	PlyLab.labels[ply] = nil
 	
-	-- TODO
+	PlyLab.Storage.delete (ply)
 end
 
 function PlyLab.setLabel (ply, label)
@@ -46,7 +51,7 @@ function PlyLab.setLabel (ply, label)
 	PlyLab.labels[ply].label = label
 	PlyLab.labels[ply].time = os.time()
 	
-	-- TODO
+	PlyLab.Storage.save (ply)
 end
 
 function PlyLab.getLabel (ply)
@@ -57,6 +62,4 @@ function PlyLab.getLabel (ply)
 	assert(isstring(ply), "Invalid SteamID.")
 	
 	return PlyLab.labels[ply] and PlyLab.labels[ply].label
-	
-	-- TODO
 end
