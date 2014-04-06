@@ -150,8 +150,6 @@ function PlyLab.showLabelMenu ()
 		end
 		
 		PlyLab.delete(sid)
-		
-		Frame:Close()
 	end
 	
 	local savebutton = vgui.Create("DButton", Frame)
@@ -175,8 +173,6 @@ function PlyLab.showLabelMenu ()
 		else
 			PlyLab.unsetLabel(sid)
 		end
-		
-		Frame:Close()
 	end
 	
 	local closebutton = vgui.Create("DButton", Frame)
