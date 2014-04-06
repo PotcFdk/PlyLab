@@ -139,7 +139,7 @@ function PlyLab.showLabelMenu ()
 	end
 	
 	local deletebutton = vgui.Create("DButton", Frame)
-	deletebutton:SetText("Delete Label")
+	deletebutton:SetText("Delete Entry")
 	deletebutton:SetTextColor(Color(195,15,0))
 	deletebutton:SetPos(10, Frame_Height-20-10)
 	deletebutton:SetSize(70, 20)
@@ -153,7 +153,7 @@ function PlyLab.showLabelMenu ()
 	end
 	
 	local savebutton = vgui.Create("DButton", Frame)
-	savebutton:SetText("Save Label")
+	savebutton:SetText("Save Entry")
 	savebutton:SetPos(Frame_Width-140-20, Frame_Height-20-10)
 	savebutton:SetSize(70, 20)
 	savebutton.DoClick = function()
