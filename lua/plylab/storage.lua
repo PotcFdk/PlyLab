@@ -61,8 +61,12 @@ function PlyLab.Storage.load (ply)
 	assert(fh:ReadByte() == FileFormatVersion, "Invalid format version.")
 	
 	local time = fh:ReadLong()
-	local alias = fh:Read(fh:ReadLong())
-	local label = fh:Read(fh:ReadLong())	
+	local alias_len = fh:ReadLong()
+	if not isnumber (alias_len) then return end
+	local alias = fh:Read(alias_len)
+	local label_len = fh:ReadLong()
+	if not isnumber (label_len) then return end
+	local label = fh:Read(label_len)	
 	fh:Close()
 	
 	PlyLab.labels[ply] = { time = time, alias = alias, label = label }
